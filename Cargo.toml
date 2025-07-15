@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "src/duniversity_backend"
+]
+resolver = "2"

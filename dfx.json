@@ -1,0 +1,38 @@
+{
+  "canisters": {
+    "duniversity_backend": {
+      "candid": "src/duniversity_backend/duniversity_backend.did",
+      "package": "duniversity_backend",
+      "type": "rust"
+    },
+    "duniversity_frontend": {
+      "dependencies": [
+        "duniversity_backend"
+      ],
+      "source": [
+        "src/duniversity_frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "duniversity_frontend"
+    },
+    "internet_identity": {
+      "candid": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity.did",
+      "frontend": {},
+      "remote": {
+        "id": {
+          "ic": "rdmx6-jaaaa-aaaaa-aaadq-cai"
+        }
+      },
+      "type": "custom",
+      "wasm": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
