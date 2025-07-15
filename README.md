@@ -18,12 +18,10 @@ Built as the final project for the **BSB Internship**.
 
 ## 👨‍💻 Tech Stack
 
-| Technology               | Logo |
-|---------------------------|------|
-| 🦀 [Rust](https://www.rust-lang.org/) | [![Rust](https://img.shields.io/badge/-Rust-black?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/) |
-| ⚛️ [React](https://react.dev/) | [![React](https://img.shields.io/badge/-React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/) |
-| 🌐 [Internet Computer (ICP)](https://internetcomputer.org/) | [![ICP](https://img.shields.io/badge/-ICP-purple?style=for-the-badge&logo=dfinity&logoColor=white)](https://internetcomputer.org/) |
-| 👥 DAO Governance | ![DAO](https://img.icons8.com/external-flaticons-lineal-color-flat-icons/48/000000/external-decentralized-cryptocurrency-flaticons-lineal-color-flat-icons.png) |
+[![Rust](https://img.shields.io/badge/-Rust-black?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/) 
+[![React](https://img.shields.io/badge/-React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/) 
+[![ICP](https://img.shields.io/badge/-ICP-purple?style=for-the-badge&logo=dfinity&logoColor=white)](https://internetcomputer.org/) 
+<img src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/48/000000/external-decentralized-cryptocurrency-flaticons-lineal-color-flat-icons.png" alt="DAO" height="28">
 
 ---
 
