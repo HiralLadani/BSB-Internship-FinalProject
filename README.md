@@ -1,61 +1,102 @@
-# `duniversity`
+# 🎓 Decentralized Autonomous University (DAU)
 
-Welcome to your new `duniversity` project and to the Internet Computer development community. By default, creating a new project adds this README and some template files to your project directory. You can edit these template files to customize your project and to include your own code to speed up the development cycle.
+![Rust](https://img.shields.io/badge/Rust-Backend-orange?logo=rust)  
+![React](https://img.shields.io/badge/React-Frontend-61DAFB?logo=react)  
+![ICP](https://img.shields.io/badge/Internet%20Computer-Platform-purple?logo=dfinity)  
+![DAO](https://img.shields.io/badge/DAO-Community%20Governance-29ABE2)  
+![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
-To get started, you might want to explore the project directory structure and the default configuration file. Working with this project in your development environment will not affect any production deployment or identity tokens.
+A cutting-edge **educational platform on Internet Computer (ICP)** where **courses, certifications, and administration are managed through DAOs**, enabling a community-driven, transparent, and accessible global education system.
 
-To learn more before you start working with `duniversity`, see the following documentation available online:
+Built as the final project for the **BSB Internship**.  
+🚀 Final project for the **BSB Internship**, collaboratively developed by:
+- 👩‍💻 **Hiral Ladani**
+- 👨‍💻 **Arsh Ansari**
+- 👩‍💻 **Bhanuja Sharma**
 
-- [Quick Start](https://internetcomputer.org/docs/current/developer-docs/setup/deploy-locally)
-- [SDK Developer Tools](https://internetcomputer.org/docs/current/developer-docs/setup/install)
-- [Rust Canister Development Guide](https://internetcomputer.org/docs/current/developer-docs/backend/rust/)
-- [ic-cdk](https://docs.rs/ic-cdk)
-- [ic-cdk-macros](https://docs.rs/ic-cdk-macros)
-- [Candid Introduction](https://internetcomputer.org/docs/current/developer-docs/backend/candid/)
+---
 
-If you want to start working on your project right away, you might want to try the following commands:
+## 👨‍💻 Tech Stack
+
+| Technology               | Logo |
+|---------------------------|------|
+| 🦀 [Rust](https://www.rust-lang.org/) | [![Rust](https://img.shields.io/badge/-Rust-black?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/) |
+| ⚛️ [React](https://react.dev/) | [![React](https://img.shields.io/badge/-React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/) |
+| 🌐 [Internet Computer (ICP)](https://internetcomputer.org/) | [![ICP](https://img.shields.io/badge/-ICP-purple?style=for-the-badge&logo=dfinity&logoColor=white)](https://internetcomputer.org/) |
+| 👥 DAO Governance | ![DAO](https://img.icons8.com/external-flaticons-lineal-color-flat-icons/48/000000/external-decentralized-cryptocurrency-flaticons-lineal-color-flat-icons.png) |
+
+---
+
+## ✨ Features
+
+✅ Decentralized educational platform hosted on ICP  
+✅ Community-driven DAO governance for managing courses & certifications  
+✅ React-based user interface  
+✅ Rust-based backend canisters on Internet Computer  
+✅ Transparent, tamper-proof certifications  
+✅ Global accessibility, low fees
+
+
+---
+
+## 🚀 Installation & Run
+
+### 📥 Clone this repository
 
 ```bash
-cd duniversity/
-dfx help
-dfx canister --help
+git clone https://github.com/HiralLadani/BSB-Internship-FinalProject.git
+cd Decentralized-Autonomous-University
 ```
 
-## Running the project locally
-
-If you want to test your project locally, you can use the following commands:
+🦀 Backend (Rust on ICP)
+Make sure you have DFINITY SDK installed.
 
 ```bash
-# Starts the replica, running in the background
-dfx start --background
 
-# Deploys your canisters to the replica and generates your candid interface
+cd backend
+dfx start --background
 dfx deploy
 ```
 
-Once the job completes, your application will be available at `http://localhost:4943?canisterId={asset_canister_id}`.
+This deploys Rust-based canisters to your local Internet Computer replica.
 
-If you have made changes to your backend canister, you can generate a new candid interface with
-
+⚛️ Frontend (React)
 ```bash
-npm run generate
-```
 
-at any time. This is recommended before starting the frontend development server, and will be run automatically any time you run `dfx deploy`.
-
-If you are making frontend changes, you can start a development server with
-
-```bash
+cd frontend
+npm install
 npm start
 ```
+Runs the React frontend at http://localhost:PORT
 
-Which will start a server at `http://localhost:8080`, proxying API requests to the replica at port 4943.
 
-### Note on frontend environment variables
 
-If you are hosting frontend code somewhere without using DFX, you may need to make one of the following adjustments to ensure your project does not fetch the root key in production:
+## 📄 License
+MIT License
 
-- set`DFX_NETWORK` to `ic` if you are using Webpack
-- use your own preferred method to replace `process.env.DFX_NETWORK` in the autogenerated declarations
-  - Setting `canisters -> {asset_canister_id} -> declarations -> env_override to a string` in `dfx.json` will replace `process.env.DFX_NETWORK` with the string in the autogenerated declarations
-- Write your own `createActor` constructor
+Copyright (c) 2025  
+Hiral Ladani, Arsh Ansari, Bhanuja Sharma
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+## 📬 Contributors
+
+🤝 This project was collaboratively developed by:  
+
+- 👩‍💻 [**Hiral Ladani**](https://github.com/HiralLadani)  
+- 👨‍💻 [**Arsh Ansari**](https://github.com/arsh-ansari)  
+- 👩‍💻 [**Bhanuja Sharma**](https://github.com/BhanujaSharma)
+
