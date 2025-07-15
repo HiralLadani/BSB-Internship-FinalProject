@@ -3,16 +3,24 @@
     "duniversity_backend": {
       "candid": "src/duniversity_backend/duniversity_backend.did",
       "package": "duniversity_backend",
-      "type": "rust"
+      "type": "rust",
+      "workspace": "duniversity_backend",
+       "build": "cargo build --target wasm32-unknown-unknown --release --package duniversity_backend",
+        "wasm": "target/wasm32-unknown-unknown/release/duniversity_backend.wasm",
+       "declarations": {
+        "output": "src/declarations/duniversity_backend/",
+        "node_compatibility": true
+      }
     },
     "duniversity_frontend": {
+         "type": "assets",
       "dependencies": [
         "duniversity_backend"
       ],
       "source": [
         "src/duniversity_frontend/dist"
       ],
-      "type": "assets",
+      
       "workspace": "duniversity_frontend"
     },
     "internet_identity": {
@@ -22,10 +30,15 @@
         "id": {
           "ic": "rdmx6-jaaaa-aaaaa-aaadq-cai"
         }
-      },
+      },"declarations": {
+            "output": "src/declarations/internet_identity/",
+            "node_compatibility": true
+        },
+
       "type": "custom",
       "wasm": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz"
     }
+    
   },
   "defaults": {
     "build": {
