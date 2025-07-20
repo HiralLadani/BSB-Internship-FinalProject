@@ -3,7 +3,7 @@ use ic_cdk::{init, caller};
 use std::cell::RefCell;
 use std::collections::HashMap;
 use candid::{CandidType, Deserialize, Principal};
-
+ use ic_cdk::query;
 // --- Custom Type Aliases for Clarity ---
 type CourseId = String; // Using String for simplicity, can be u64 or Principal later
 type UserId = Principal; // Clarity for users
@@ -33,13 +33,11 @@ pub enum CourseStatus {
 // Represents a user's profile information
 #[derive(Clone, Debug, CandidType, Deserialize)]
 pub struct UserProfile {
-    pub name: String,
-    pub bio: Option<String>, // e.g., "AI Researcher", "Student of Computer Science"
-    pub contact_email: Option<String>,
-    pub github_username: Option<String>, // Example for a professor profile
-    // Potentially add more role-specific fields here
-    // pub student_id: Option<String>,
-    // pub faculty_department: Option<String>,
+  pub profile_id: Principal,
+  pub name: String,
+  pub bio: Option<String>,
+  pub contact_email: Option<String>,
+  pub github_username: Option<String>,
 }
 
 // Represents a course in the university
@@ -64,7 +62,9 @@ thread_local! {
     // Stores deployer principal (set once at init)
     static DEPLOYER_PRINCIPAL: RefCell<Option<Principal>> = RefCell::new(None);
     // Stores user profiles (Principal -> UserProfile)
-    static USER_PROFILES: RefCell<HashMap<Principal, UserProfile>> = RefCell::new(HashMap::new());
+     static USER_PROFILES: std::cell::RefCell<std::collections::HashMap<Principal, UserProfile>> = RefCell::new(HashMap::new());
+    //static USER_PROFILES: RefCell<HashMap<String, UserProfile>> = RefCell::new(HashMap::new());
+    // static PROFILES: RefCell<HashMap<String, Profile>> = RefCell::new(HashMap::new());
     // Stores all courses (CourseId -> Course)
     static COURSES: RefCell<HashMap<CourseId, Course>> = RefCell::new(HashMap::new());
     // Stores student enrollments (StudentId -> Vec<CourseId>) - for future use
@@ -222,29 +222,52 @@ fn whoami() -> Principal {
 /// Allows a logged-in user to create or update their profile.
 #[ic_cdk::update]
 fn create_or_update_my_profile(profile_data: UserProfile) {
-    require_registered_user(); // Must be logged in with an assigned role
-    let me = caller();
-    USER_PROFILES.with(|p| {
-        p.borrow_mut().insert(me, profile_data);
-    });
-    ic_cdk::println!("Profile for {:?} created/updated.", me);
+  require_registered_user();
+    let caller_principal= caller();
+
+  ic_cdk::println!(
+    "Saving profile for {:?} (sent profile_id={:?})",
+    caller_principal, profile_data.profile_id
+  );
+
+  USER_PROFILES.with(|map| {
+    map.borrow_mut().insert(
+      caller_principal,
+      UserProfile {
+        profile_id: caller_principal,
+        name: profile_data.name,
+        bio: profile_data.bio,
+        contact_email: profile_data.contact_email,
+        github_username: profile_data.github_username,
+      },
+    );
+  });
 }
 
-/// Retrieves the profile of the current caller.
-#[ic_cdk::query]
-fn get_my_profile() -> Option<UserProfile> {
-    require_registered_user();
-    let me = caller();
-    USER_PROFILES.with(|p| p.borrow().get(&me).cloned())
-}
+
+// fn update_profile(profile: Profile) {
+//   PROFILES.with(|p| {
+//     p.borrow_mut().insert(profile.principal.clone(), profile);
+//   });
+// }
+// #[query]
+// fn get_profile(principal: String) -> Option<Profile> {
+//   PROFILES.with(|p| p.borrow().get(&principal).cloned())
+// }
+// /// Retrieves the profile of the current caller.
 
 /// Admin-only: Retrieves any user's profile by their Principal ID.
+// #[ic_cdk::query]
+// fn get_user_profile(user_id: Principal) -> Option<UserProfile> {
+//     require_admin();
+//     USER_PROFILES.with(|p| p.borrow().get(&user_id).cloned())
+// }
 #[ic_cdk::query]
-fn get_user_profile(user_id: Principal) -> Option<UserProfile> {
-    require_admin();
-    USER_PROFILES.with(|p| p.borrow().get(&user_id).cloned())
+fn get_my_profile() -> Option<UserProfile> {
+  require_registered_user();
+  let caller_principal = ic_cdk::caller();
+  USER_PROFILES.with(|map| map.borrow().get(&caller_principal).cloned())
 }
-
 // ──────────────────────────────────────────────────────────────
 // COURSE MANAGEMENT FUNCTIONS
 // ──────────────────────────────────────────────────────────────
@@ -442,10 +465,14 @@ fn get_course_details(course_id: CourseId) -> Option<Course> {
 #[ic_cdk::query]
 fn list_courses(filter_status: Option<CourseStatus>) -> Vec<Course> {
     let me = caller();
+
     let is_admin = is_admin(me);
     let is_professor = is_professor(me);
     let is_student = is_student(me);
 
+    ic_cdk::println!("CALLER is: {:?}", me);
+    ic_cdk::println!("is_professor: {}", is_professor);
+    ic_cdk::println!("COURSES total stored: {}", COURSES.with(|c| c.borrow().len()));
     COURSES.with(|c| {
         c.borrow()
             .iter()

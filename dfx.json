@@ -5,7 +5,11 @@
       "package": "duniversity_backend",
       "type": "rust",
       "workspace": "duniversity_backend",
-       "build": "cargo build --target wasm32-unknown-unknown --release --package duniversity_backend",
+    
+          "build": [
+                    "cargo build --release --target wasm32-unknown-unknown --package duniversity_backend",
+                    "candid-extractor target/wasm32-unknown-unknown/release/duniversity_backend.wasm > src/duniversity_backend/duniversity_backend.did"
+                  ],
         "wasm": "target/wasm32-unknown-unknown/release/duniversity_backend.wasm",
        "declarations": {
         "output": "src/declarations/duniversity_backend/",

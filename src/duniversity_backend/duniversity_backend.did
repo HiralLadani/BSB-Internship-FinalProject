@@ -20,11 +20,13 @@ type CourseStatus = variant {
 type Result = variant { Ok : Course; Err : text };
 type Role = variant { Guest; Student; Developer; Professor; Admin };
 type UserProfile = record {
-  bio : opt text;
-  github_username : opt text;
-  name : text;
+  profile_id : principal;
+  name       : text;
+  bio        : opt text;
   contact_email : opt text;
+  github_username : opt text;
 };
+
 service : () -> {
   approve_course : (text) -> (Result);
   assign_role : (principal, Role) -> ();
