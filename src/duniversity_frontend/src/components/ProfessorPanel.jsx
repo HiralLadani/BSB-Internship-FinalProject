@@ -9,8 +9,13 @@ export default function ProfessorPanel({
   onUpdateProfile,
   onCreateCourse,
   onProposeCourse
-}) {
+})
+
+{
+ // console.log("[ProfessorPanel] myCourses prop:", myCourses);
+ 
   return (
+    
     <div className="panel professor-panel">
       <h2>Professor Dashboard</h2>
       <UserProfileForm
@@ -19,18 +24,24 @@ export default function ProfessorPanel({
         onSubmit={onUpdateProfile}
       />
       <CourseCreationForm onCreateCourse={onCreateCourse} />
+      
        <section>
         <h3>My Courses ({myCourses.length})</h3>
         {myCourses.length > 0 ? (
           <ul>
-            {myCourses.map((course) => (
-              <li key={course.id}>
-                <strong>{course.title}</strong> (ID: {course.id}) – Votes: {course.vote_count}
-                {course.status === "Draft" && (
-                  <button onClick={() => onProposeCourse(course.id)}>Propose</button>
-                )}
-              </li>
-            ))}
+            {
+            myCourses.map(course => (
+                
+                    <li key={course.id}>
+                        <strong>{course.title}</strong>
+                        <br />
+                        (ID: {course.id}) - Status: {course.status} — Votes:{course.vote_count}
+                        {course.status === "Voting" && (<span> 🎉 Ready for admin review</span>)}
+                        {course.status === "Draft" && (<button onClick={() => onProposeCourse(course.id)}>Propose</button>)}
+            
+                    </li>
+            )
+            )}
           </ul>
         ) : (
           <p>You haven’t created any courses yet.</p>

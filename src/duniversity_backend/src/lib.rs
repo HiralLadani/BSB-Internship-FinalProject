@@ -335,7 +335,6 @@ fn propose_course(course_id: CourseId) -> Result<Course, String> {
 fn vote_for_course(course_id: CourseId) -> Result<Course, String> {
     require_student();
     let student_id = caller();
-
     COURSES.with(|c| {
         let mut courses_map = c.borrow_mut();
         if let Some(course) = courses_map.get_mut(&course_id) {
@@ -347,7 +346,7 @@ fn vote_for_course(course_id: CourseId) -> Result<Course, String> {
             if course.voters.contains_key(&student_id) {
                 return Err("You have already voted for this course.".to_string());
             }
-
+            //ic_cdk::println!("course.vote_count", course.vote_count);
             course.vote_count += 1;
             course.voters.insert(student_id, true);
             // Optionally, change status to Voting if it's currently Proposed and gets its first vote
@@ -355,11 +354,21 @@ fn vote_for_course(course_id: CourseId) -> Result<Course, String> {
                 course.status = CourseStatus::Voting;
             }
             ic_cdk::println!("Student {:?} voted for course: {:?}", student_id, course_id);
+            ic_cdk::println!("Student {:?} voted for course {} (total now {})", student_id, course_id, course.vote_count);
+
             Ok(course.clone())
         } else {
             Err("Course not found.".to_string())
         }
     })
+}
+fn get_course_voters(course_id: CourseId) -> Vec<Principal> {
+  COURSES.with(|c| {
+    c.borrow()
+     .get(&course_id)
+     .map(|course| course.voters.keys().cloned().collect())
+     .unwrap_or_default()
+  })
 }
 
 /// Admin-only: Approves a course.

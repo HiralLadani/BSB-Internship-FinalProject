@@ -43,11 +43,11 @@ export default function AdminPanel({ users, principalList, courses, onChangeRole
         <h3>Courses for Approval</h3>
         <ul>
           {courses.filter(c => ["Proposed","Voting"].includes(c.status)).map(c => (
-            <li key={c.id}>
-              <strong>{c.title}</strong> (ID: {c.id}) – {c.status} by {c.professor_id}
-              <button onClick={() => onApproveRejectCourse(c.id, "Approved")}>Approve</button>
-              <button onClick={() => onApproveRejectCourse(c.id, "Rejected")}>Reject</button>
-            </li>
+           <li key={c.id}>
+  <strong>{c.title}</strong> – Status: {c.status} – Votes: {c.vote_count}
+  <button onClick={() => onApproveRejectCourse(c.id, "Approved")}>Approve</button>
+  <button onClick={() => onApproveRejectCourse(c.id, "Rejected")}>Reject</button>
+</li>
           ))}
         </ul>
       </section>
@@ -56,11 +56,12 @@ export default function AdminPanel({ users, principalList, courses, onChangeRole
       <section>
         <h3>All Courses ({courses.length})</h3>
         <ul>
-          {courses.map(c => (
-            <li key={c.id}>
-              <strong>{c.title}</strong> (ID: {c.id}) – {c.status} by {c.professor_id}
-            </li>
-          ))}
+          {courses.map(course => (
+  <li key={course.id}>
+    <strong>{course.title}</strong> (ID: {course.id}) - Status: {course.status}
+     - Votes: {course.vote_count} - Enrolled: {Object.keys(course.enrolled_students).length}
+  </li>
+))}
         </ul>
       </section>
     </div>

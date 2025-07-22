@@ -37,70 +37,168 @@ export default function App() {
     });
   }
 
-  async function refreshSessionAndData(act, intendedRole) {
-            if (!act) {
-              setIdentity(null);
-              setActor(null);
-              setPrincipalText("");
-              setRole("Guest");
-              setUsers([]);
-              setPrincipalList([]);
-              setAllCourses([]);
-              setMyEnrolledCourses([]);
-              setMyProfile(null);
-              return;
-            }
+  // async function refreshSessionAndData(act, intendedRole) {
+  //           if (!act) {
+  //             setIdentity(null);
+  //             setActor(null);
+  //             setPrincipalText("");
+  //             setRole("Guest");
+  //             setUsers([]);
+  //             setPrincipalList([]);
+  //             setAllCourses([]);
+  //             setMyEnrolledCourses([]);
+  //             setMyProfile(null);
+  //             return;
+  //           }
 
-              setActor(act);
-                    if (!authClient) {
-                  console.error("authClient not ready yet");
-                  return;
-                }
-                  setIdentity(await authClient.getIdentity());
-                  const me = (await authClient.getIdentity()).getPrincipal().toText();
-                  setPrincipalText(me);
+  //             setActor(act);
+  //                   if (!authClient) {
+  //                 console.error("authClient not ready yet");
+  //                 return;
+  //               }
+  //                 setIdentity(await authClient.getIdentity());
+  //                 const me = (await authClient.getIdentity()).getPrincipal().toText();
+  //                 setPrincipalText(me);
 
-                    const resRole = intendedRole
-                      ? await act.login_as_role({ [intendedRole]: null })
-                      : await act.my_role();
-                    const determined = Object.keys(resRole)[0];
-                    setRole(determined);
+  //                   const resRole = intendedRole
+  //                     ? await act.login_as_role({ [intendedRole]: null })
+  //                     : await act.my_role();
+  //                   const determined = Object.keys(resRole)[0];
+  //                   setRole(determined);
 
-                    const pfRes = await act.get_my_profile();
-                    setMyProfile(pfRes.length ? pfRes[0] : null);
+  //                   const pfRes = await act.get_my_profile();
+  //                   setMyProfile(pfRes.length ? pfRes[0] : null);
 
-                    const courses = (await act.list_courses([])).map((c) => ({
-                      ...c,
-                      status: Object.keys(c.status)[0],      
-                      professor_id: c.professor_id.toText(),
-                      vote_count: c.vote_count,
-                    }));
-                    setAllCourses(courses);
+  //                   const courses = (await act.list_courses([])).map((c) => ({
+  //                     ...c,
+  //                     status: Object.keys(c.status)[0],      
+  //                     professor_id: c.professor_id.toText(),
+  //                     vote_count: c.vote_count,
+  //                   }));
+  //                   setAllCourses(courses);
 
-                    if (determined === "Student") {
-                      const enrolled = await act
-                        .get_my_enrolled_courses()
-                        .catch(() => []);
-                      setMyEnrolledCourses(
-                        enrolled.map((c) => ({
-                          ...c,
-                          status: Object.keys(c.status)[0],
-                          professor_id: c.professor_id.toText(),
-                        }))
-                      );
-                    } else {
-                              setUsers(
-                                (await act.list_users()).map(([p, r]) => ({
-                                  principal: p.toText(),
-                                  role: Object.keys(r)[0],
-                                }))
-                              );
-                                  setPrincipalList((await act.list_principals()).map((p) => p.toText()));
-                                if (determined !== "Student") {
-                                  setMyEnrolledCourses([]);
-                                }
-                            }
+  //                   if (determined === "Student") {
+  //                     const enrolled = await act
+  //                       .get_my_enrolled_courses()
+  //                       .catch(() => []);
+  //                     setMyEnrolledCourses(
+  //                       enrolled.map((c) => ({
+  //                         ...c,
+  //                         status: Object.keys(c.status)[0],
+  //                         professor_id: c.professor_id.toText(),
+  //                       }))
+  //                     );
+  //                   } else {
+  //                             setUsers(
+  //                               (await act.list_users()).map(([p, r]) => ({
+  //                                 principal: p.toText(),
+  //                                 role: Object.keys(r)[0],
+  //                               }))
+  //                             );
+  //                                 setPrincipalList((await act.list_principals()).map((p) => p.toText()));
+  //                               if (determined !== "Student") {
+  //                                 setMyEnrolledCourses([]);
+  //                               }
+  //                           }
+  // }
+async function refreshSessionAndData(act, intendedRole) {
+  if (!act) {
+    // Reset all state
+    setIdentity(null);
+    setActor(null);
+    setPrincipalText("");
+    setRole("Guest");
+    setUsers([]);
+    setPrincipalList([]);
+    setAllCourses([]);
+    setMyEnrolledCourses([]);
+    setMyProfile(null);
+    return;
   }
+
+  setActor(act);
+  if (!authClient) {
+    console.error("authClient not ready yet");
+    return;
+  }
+
+  const identity = await authClient.getIdentity();
+  setIdentity(identity);
+  const principalTextVal = identity.getPrincipal().toText();
+  setPrincipalText(principalTextVal);
+
+  // Determine role (Professor, Admin, Student, etc.)
+  const roleRes = intendedRole
+    ? await act.login_as_role({ [intendedRole]: null })
+    : await act.my_role();
+  const determined = Object.keys(roleRes)[0];
+  setRole(determined);
+
+  // Load profile and all courses
+  const profileArr = await act.get_my_profile();
+  setMyProfile(profileArr.length > 0 ? profileArr[0] : null);
+
+  const rawCourses = await act.list_courses([]);
+   console.log("🔄 [DEBUG] rawCourses:", rawCourses);
+  const normalized = rawCourses.map(c => ({
+    ...c,
+    status: Object.keys(c.status)[0],
+    professor_id: c.professor_id.toText(),
+    //vote_count: c.vote_count,
+     vote_count: Number(c.vote_count),
+  }));
+  console.log("🔄 [DEBUG] normalized courses:", normalized);
+  setAllCourses(normalized);
+
+  // Role-specific behavior
+  if (determined === "Student") {
+    // Students see only their enrolled courses
+    const enrolled = await act.get_my_enrolled_courses().catch(() => []);
+    setMyEnrolledCourses(enrolled.map(c => ({
+      ...c,
+      status: Object.keys(c.status)[0],
+      professor_id: c.professor_id.toText(),
+    })));
+    setUsers([]);
+    setPrincipalList([]);
+
+  } else if (determined === "Professor") {
+    // Professors don’t see user lists or principals
+    setMyEnrolledCourses([]);
+    setUsers([]);
+    setPrincipalList([]);
+
+  } else if (determined === "Admin") {
+    // Admins fetch full user/principal lists
+    try {
+      const rawUsers = await act.list_users();
+      setUsers(rawUsers.map(([p, r]) => ({
+        principal: p.toText(),
+        role: Object.keys(r)[0],
+      })));
+    } catch (err) {
+      console.error("list_users() failed:", err);
+      setUsers([]);
+    }
+
+    try {
+      const principals = await act.list_principals();
+      setPrincipalList(principals.map(p => p.toText()));
+    } catch (err) {
+      console.error("list_principals() failed:", err);
+      setPrincipalList([]);
+    }
+
+    setMyEnrolledCourses([]);
+
+  } else {
+    // Fallback: clear everything
+    setMyEnrolledCourses([]);
+    setUsers([]);
+    setPrincipalList([]);
+  }
+}
+
 
   // — Initial session check
   useEffect(() => {
@@ -210,23 +308,41 @@ export default function App() {
   //     toast.error(`Voting failed: ${e}`);
   //   }
   // };
-const handleVoteCourse = async (courseId) => {
-  if (!actor) return toast.error("Unauthorized");
+// const handleVoteCourse = async (courseId) => {
+//   if (!actor) return toast.error("Unauthorized");
 
+//   try {
+//     await actor.vote_for_course(courseId);
+//     const result = await actor.vote_for_course(courseId);
+//     if (result.Err) {
+//       toast.error(result.Err);
+//     } else {
+//       toast.success("Voted");
+//       // 🔁 Refresh data here:
+//       await refreshSessionAndData(actor);
+//     }
+//   } catch (err) {
+//     toast.error(err.toString());
+//   }
+// };
+const handleVoteCourse = async (courseId) => {
   try {
-    const result = await actor.vote_for_course(courseId);
-    if (result.Err) {
-      toast.error(result.Err);
-    } else {
-      toast.success("Voted");
-      // 🔁 Refresh data here:
-      await refreshSessionAndData(actor);
-    }
-  } catch (err) {
-    toast.error(err.toString());
+    await actor.vote_for_course(courseId);
+     toast.success("Voted successfully!");
+    // 🔁 Refresh data:
+    const courses = await actor.list_courses([]);
+     console.log("👉 [DEBUG] fetched courses after vote:", courses);
+    setAllCourses(courses.map(c => ({
+      ...c,
+      status: Object.keys(c.status)[0],
+      professor_id: c.professor_id.toText(),
+    })));
+    
+     await refreshSessionAndData(actor);
+  } catch (e) {
+    toast.error(`Vote failed: ${e}`);
   }
 };
-
   const handleEnrollCourse = async (courseId) => {
     try {
       await actor.enroll_in_course(courseId);
@@ -264,6 +380,7 @@ const handleVoteCourse = async (courseId) => {
         <ProfessorPanel
           principalText={principalText}
           myCourses={allCourses.filter(c=> c.professor_id === principalText)}
+          
           currentProfile={myProfile}
           onUpdateProfile={handleCreateOrUpdateProfile}
           onCreateCourse={handleCreateCourse}

@@ -26,10 +26,7 @@ export default function StudentPanel({
           {coursesForVoting.map(c => (
             <li key={c.id}>
               <strong>{c.title}</strong> – {c.professor_id}
-              <button onClick={async () => {
-  await onVoteCourse(course.id);
-  // Optionally: props.onRefresh(); // If you pass a refresh helper
-}}>Vote</button>
+              <button onClick={() => onVoteCourse(c.id)}>Vote</button>
             </li>
           ))}
         </ul>
