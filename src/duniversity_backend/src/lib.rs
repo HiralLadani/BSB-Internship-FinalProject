@@ -3,7 +3,7 @@ use ic_cdk::{init, caller};
 use std::cell::RefCell;
 use std::collections::HashMap;
 use candid::{CandidType, Deserialize, Principal};
- use ic_cdk::query;
+ //use ic_cdk::query;
 // --- Custom Type Aliases for Clarity ---
 type CourseId = String; // Using String for simplicity, can be u64 or Principal later
 type UserId = Principal; // Clarity for users
@@ -509,4 +509,3 @@ fn list_courses(filter_status: Option<CourseStatus>) -> Vec<Course> {
 
 // Export Candid interface for the canister.
 ic_cdk::export_candid!();
-

@@ -4,6 +4,7 @@
       "candid": "src/duniversity_backend/duniversity_backend.did",
       "package": "duniversity_backend",
       "type": "rust",
+      
       "workspace": "duniversity_backend",
     
           "build": [
@@ -14,7 +15,8 @@
        "declarations": {
         "output": "src/declarations/duniversity_backend/",
         "node_compatibility": true
-      }
+      },
+      "stable_memory": { "size": 1024 }
     },
     "duniversity_frontend": {
          "type": "assets",
