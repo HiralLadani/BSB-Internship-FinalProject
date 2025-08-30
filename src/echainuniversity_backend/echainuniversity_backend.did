@@ -1,3 +1,58 @@
-service : {
-    "greet": (text) -> (text) query;
+type Course = record {
+  id : text;
+  professor_id : principal;
+  status : CourseStatus;
+  title : text;
+  description : text;
+  voters : vec record { principal; bool };
+  created_at : nat64;
+  enrolled_students : vec record { principal; bool };
+  vote_count : nat64;
+};
+type CourseStatus = variant {
+  Approved;
+  Draft;
+  Rejected;
+  Proposed;
+  Voting;
+  Archived;
+  Suggest;
+};
+type Result = variant { Ok : Course; Err : text };
+type Result_1 = variant { Ok; Err : text };
+type Role = variant { Guest; Student; Developer; Professor; Admin };
+type UserProfile = record {
+  bio : opt text;
+  github_username : opt text;
+  name : text;
+  contact_email : opt text;
+  avatar_mime : opt text;
+  profile_id : principal;
+  avatar : opt blob;
+};
+service : () -> {
+  approve_course : (text) -> (Result);
+  assign_admin : (principal) -> ();
+  assign_role : (principal, Role) -> ();
+  create_course : (text, text) -> (Result);
+  create_or_update_my_profile : (UserProfile) -> ();
+  enroll_in_course : (text) -> (Result);
+  get_course_details : (text) -> (opt Course) query;
+  get_deployer_principal : () -> (opt principal) query;
+  get_my_enrolled_courses : () -> (vec Course) query;
+  get_my_profile : () -> (opt UserProfile) query;
+  get_profile_image : (principal) -> (opt record { blob; opt text }) query;
+  list_courses : (opt CourseStatus) -> (vec Course) query;
+  list_user_profiles : () -> (vec record { principal; UserProfile }) query;
+  list_users : () -> (vec record { principal; Role }) query;
+  login_as_role : (Role) -> (Role);
+  my_role : () -> (Role) query;
+  propose_course : (text) -> (Result);
+  reject_course : (text) -> (Result);
+  remove_my_profile_image : () -> (Result_1);
+  suggest_course : (text, text) -> (Result);
+  upload_my_profile_image : (blob, opt text) -> (Result_1);
+  vote_for_course : (text) -> (Result);
+  vote_for_suggest_course : (text) -> (Result);
+  whoami : () -> (principal) query;
 }

@@ -25,6 +25,14 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+     headers: {
+      'Content-Security-Policy': `
+        default-src 'self';
+        img-src 'self' blob: data:;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval';
+        style-src 'self' 'unsafe-inline';
+      `.replace(/\s+/g, ' ').trim()
+    }
   },
   plugins: [
     react(),
